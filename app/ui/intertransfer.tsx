@@ -44,7 +44,7 @@ function InterTransfer() {
 	}>()
 	useEffect(() => {
 		// debounce(getRubleRate, 500)niioo
-		// getRubleRate().then(selectCountry)
+		// getRubleRate().then(selectCqwountry)
 		selectCountry()
 		getRubleRate()
 	}, [fromCurrency, toCurrency])
