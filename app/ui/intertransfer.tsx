@@ -242,11 +242,12 @@ function InterTransfer() {
 	const getRubleRate = async () => {
 		const ruble = await fetch('/api/exchange_rate', {
 			method: 'GET',
-			cache: 'force-cache',
+			cache: 'no-store',
 			next: { revalidate: 3600 * 20 },
 		})
 		const commission = await fetch('/api/fetchcommission', {
 			method: 'GET',
+			cache: 'no-store',
 
 			next: { revalidate: 3600 * 20 },
 		})
