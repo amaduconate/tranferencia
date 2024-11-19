@@ -351,14 +351,14 @@ function InterTransfer() {
 		<>
 			<Card className='shadow-2xl transform transition-transform duration-900hover:scale-110  ring-1 ring-gray-900/5 rounded-lg leading-none'>
 				<CardHeader>
-					<CardTitle>AC Transfer</CardTitle>
+					<CardTitle>AcTransfer</CardTitle>
 					<CardDescription>
-						<>Transferencias Rapidas e segura</>
+						<>Transferências Rápidas & Seguras</>
 					</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<CardDescription>
-						<>Enviar apartir de</>
+					<CardDescription className='text-bold'>
+						<>Montante a enviar</>
 					</CardDescription>
 					<Input
 						placeholder={'Montante a enviar'}
@@ -367,8 +367,8 @@ function InterTransfer() {
 						onChange={handleamountChange}
 						className='shadow-2xl transform transition-transform duration-900 hover:scale-110  ring-1 ring-gray-900/5 rounded-lg leading-none'
 					/>
-					<CardDescription>
-						<>Enviar para</>
+					<CardDescription className='text-bold'>
+						<>Montante a receber</>
 					</CardDescription>
 					<Input
 						placeholder={'Montante a receber'}
@@ -381,8 +381,8 @@ function InterTransfer() {
 						value={fromCurrency}
 						onValueChange={(e) => setFromCurrency(e)}
 					>
-						<SelectGroup className=''>
-							<SelectLabel>From</SelectLabel>
+						<SelectGroup>
+							<SelectLabel>Enviar apartir de</SelectLabel>
 							<SelectTrigger className='shadow-2xl transform transition-transform duration-900 hover:scale-110  ring-1 ring-gray-900/5 rounded-lg leading-none'>
 								<SelectValue
 									aria-label={fromCurrency}
@@ -392,15 +392,15 @@ function InterTransfer() {
 								</SelectValue>
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value='EUR'>EUR</SelectItem>
-								<SelectItem value='XOF'>XOF</SelectItem>
-								<SelectItem value='RUB'>RUB</SelectItem>
+								<SelectItem value='EUR'>Europa</SelectItem>
+								<SelectItem value='XOF'>Guine-Bissau</SelectItem>
+								<SelectItem value='RUB'>Russia</SelectItem>
 							</SelectContent>
 						</SelectGroup>
 					</Select>
 					<Select value={toCurrency} onValueChange={(e) => setToCurrency(e)}>
 						<SelectGroup>
-							<SelectLabel>To</SelectLabel>
+							<SelectLabel>Enviar para</SelectLabel>
 							<SelectTrigger>
 								<SelectValue aria-label={toCurrency} placeholder='Para onde' />
 							</SelectTrigger>
@@ -411,13 +411,13 @@ function InterTransfer() {
 					</Select>
 				</CardContent>
 				<CardFooter>
-					<div>Transferencias</div>
+					<div>Transferências</div>
 				</CardFooter>
 			</Card>
 			<Toaster />
 			<Link href='https://wa.me/79199737560'>
-				<Button className=' max-w-7xl mx-auto rgb-button text-white font-bold shadow-lg  shadow-red-600/50 transform transition-transform duration-300 hover:scale-110 relative px-7 py-6  ring-1 ring-gray-900/5 rounded-lg leading-none flex items-top justify-start space-x-6'>
-					Whatsapp
+				<Button className=' bg-green-600 max-w-7xl mx-auto rgb-button text-white font-bold shadow-lg  shadow-red-600/50 transform transition-transform duration-300 hover:scale-110 relative px-7 py-6  ring-1 ring-gray-900/5 rounded-lg leading-none flex items-top justify-start space-x-6'>
+					WhatsApp
 				</Button>
 			</Link>
 		</>
