@@ -47,7 +47,7 @@ function InterTransfer() {
 		// getRubleRate().then(selectCountry)
 		selectCountry()
 		getRubleRate()
-	}, [fromCurrency, toCurrency, amount, amountReceived])
+	}, [fromCurrency, toCurrency])
 	const inputschema1 = z.coerce
 		.number()
 		.positive()
@@ -242,14 +242,13 @@ function InterTransfer() {
 	const getRubleRate = async () => {
 		const ruble = await fetch('/api/exchange_rate', {
 			method: 'GET',
-			cache: 'no-store',
-			next: { revalidate: 3600 * 20 },
+			cache: 'no-cache',
+			// next: { revalidate: 3600 * 20 },
 		})
 		const commission = await fetch('/api/fetchcommission', {
 			method: 'GET',
-			cache: 'no-store',
-
-			next: { revalidate: 3600 * 20 },
+			cache: 'no-cache',
+			// next: { revalidate: 3600 * 20 },
 		})
 		const dataCommission: {
 			id: number
@@ -271,13 +270,12 @@ function InterTransfer() {
 			const parseDataRate = parseFloat(dataRate.toFixed(4))
 			console.log(amount)
 			if (fromCurrency === 'EUR' && toCurrency === 'RUB') {
-				const parseamount = parseFloat(amount.toFixed(1))
-				const calculateAmountReceived =
-					(parseamount * parseDataRate * (100 - commission.fromEur)) / 100
+				const parseamount = parseFloat(amount.toFixed(3))
+				const calculateAmountReceived = parseamount * parseDataRate * ((100 - commission.fromEur) / 100)
 				console.log(dataRate)
 				setAmountReceived(parseFloat(calculateAmountReceived.toFixed()))
 			} else if (fromCurrency === 'RUB' && toCurrency === 'XOF') {
-				const parseamount = parseFloat(amount.toFixed())
+				const parseamount = parseFloat(amount.toFixed(3))
 				const calculateAmountReceived =
 					((parseamount * 655) / parseDataRate) *
 					((100 - commission.fromRub) / 100)
@@ -288,7 +286,7 @@ function InterTransfer() {
 					(parseamount / 655) *
 					parseDataRate *
 					((100 - commission.fromXof) / 100)
-				setAmountReceived(parseFloat(calculateAmountReceived.toFixed()))
+				setAmountReceived(parseFloat(calculateAmountReceived.toFixed(3)))
 			}
 		}
 	}
@@ -305,25 +303,25 @@ function InterTransfer() {
 		) {
 			const parseDataRate = parseFloat(dataRate.toFixed(2))
 			if (toCurrency === 'RUB' && fromCurrency === 'XOF') {
-				const parseamountReceived = parseFloat(amountReceived?.toFixed())
+				const parseamountReceived = parseFloat(amountReceived.toFixed(3))
 				const calculateAmount =
 					(parseamountReceived / parseDataRate) *
 					655 *
 					((100 + commission.fromXof) / 100)
 				setAmount(parseFloat(calculateAmount.toFixed()))
 			} else if (toCurrency === 'XOF' && fromCurrency === 'RUB') {
-				const parseamountReceived = parseFloat(amountReceived?.toFixed())
+				const parseamountReceived = parseFloat(amountReceived.toFixed())
 				const calculateAmount =
 					(parseamountReceived / 655) *
 					parseDataRate *
 					((100 + commission.fromRub) / 100)
-				setAmount(parseFloat(calculateAmount.toFixed()))
+				setAmount(parseFloat(calculateAmount.toFixed(3)))
 			} else if (toCurrency === 'RUB' && fromCurrency === 'EUR') {
-				const parseamountReceived = parseFloat(amountReceived?.toFixed())
+				const parseamountReceived = parseFloat(amountReceived.toFixed())
 				const calculateAmount =
 					(parseamountReceived / parseDataRate) *
 					((100 + commission.fromEur) / 100)
-				setAmount(parseFloat(calculateAmount.toFixed(1)))
+				setAmount(parseFloat(calculateAmount.toFixed(3)))
 			}
 		}
 	}
