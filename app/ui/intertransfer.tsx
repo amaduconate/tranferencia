@@ -43,7 +43,7 @@ function InterTransfer() {
 		id: number
 	}>()
 	useEffect(() => {
-		// debounce(getRubleRate, 500)
+		// debounce(getRubleRate, 500)niioo
 		// getRubleRate().then(selectCountry)
 		selectCountry()
 		getRubleRate()
