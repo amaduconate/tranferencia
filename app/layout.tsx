@@ -17,6 +17,11 @@ import { AuthProvider } from './AuthProvider'
 export const metadata: Metadata = {
 	title: 'Currency',
 	description: 'Transfer money with ease',
+	icons: {
+		icon: '/imag/money.svg',
+		shortcut: '/imag/money.svg',
+		apple: '/imag/money.svg',
+	},
 }
 
 export default function RootLayout({

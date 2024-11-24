@@ -24,3 +24,11 @@ model commission {
   fromRub Float
   fromXof Float
 }
+
+model exchange_rate {
+  id Int @id @default(autoincrement())
+
+  fromEur Float
+  fromRub Float
+  fromXof Float
+}

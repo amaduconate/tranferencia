@@ -22,9 +22,9 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 
 const formSchema = z.object({
-	fromEur: z.coerce.number().positive(),
-	fromRub: z.coerce.number().positive(),
-	fromXof: z.coerce.number().positive(),
+	fromEur: z.coerce.number(),
+	fromRub: z.coerce.number(),
+	fromXof: z.coerce.number(),
 })
 
 function Page() {
