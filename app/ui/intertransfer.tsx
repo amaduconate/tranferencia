@@ -478,7 +478,11 @@ function InterTransfer() {
 					/>
 					<Select
 						value={fromCurrency}
-						onValueChange={(e) => setFromCurrency(e)}
+						onValueChange={(e) => {
+							setAmountReceived('')
+							setAmount('')
+							setFromCurrency(e)
+						}}
 					>
 						<SelectGroup>
 							<SelectLabel>Enviar apartir de</SelectLabel>
