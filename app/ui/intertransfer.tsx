@@ -53,7 +53,7 @@ function InterTransfer() {
 		// getRubleRate().then(selectCqwountry)
 		selectCountry()
 		getRubleRate()
-	}, [fromCurrency, toCurrency])
+	}, [fromCurrency, toCurrency, amount, amountReceived])
 	const inputschema1 = z.coerce
 		.number()
 		.positive()
