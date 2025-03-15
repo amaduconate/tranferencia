@@ -1,5 +1,7 @@
 'use client'
 
+
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -14,7 +16,7 @@ import { Input } from '@/components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import * as z from 'zod'
 import {
 	RegisterLink,
@@ -22,6 +24,7 @@ import {
 	LogoutLink,
 } from '@kinde-oss/kinde-auth-nextjs/components'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { useState } from 'react'
 import {
 	Table,
 	TableBody,
@@ -32,6 +35,7 @@ import {
 	TableRow,
 } from '@/components/ui/table'
 
+
 const formSchema = z.object({
 	fromEur: z.coerce.number(),
 	fromRub: z.coerce.number(),
@@ -39,16 +43,40 @@ const formSchema = z.object({
 })
 
 function Page() {
+
 	const [isLoading, setIsLoading] = useState(true)
-	const [commission, setCommission] = useState<{
-		fromEur: number
-		fromRub: number
-		fromXof: number
+	const [commissionPartnership, setCommissionPartnership] = useState<{
+		fromEurPartnership: number
+		fromRubPartnership: number
+		fromXofPartnership: number
 		id: number
 	}>()
+
 	useEffect(() => {
-		getCommission()
+		getPartnershipCommission()
 	}, [])
+
+	const getPartnershipCommission = async () => {
+		try {
+			const commissionPartnership = await fetch('/api/fetchPartnership', {
+				method: 'GET',
+				cache: 'no-store',
+			})
+			const dataCommissionPartnership: {
+				id: number
+				fromEurPartnership: number
+				fromRubPartnership: number
+				fromXofPartnership: number
+			} = await commissionPartnership.json()
+
+			setCommissionPartnership(dataCommissionPartnership);
+		} catch (error) {
+			console.error("error fetching commission", error);
+		}finally {
+			setIsLoading(false)
+		}
+	}
+
 	const { getPermissions, user, getClaim } = useKindeBrowserClient()
 
 	const form = useForm<z.infer<typeof formSchema>>({
@@ -60,35 +88,9 @@ function Page() {
 		},
 	})
 
-
-
-	const getCommission = async () => {
-		try {
-			const commission = await fetch('/api/fetchcommission', {
-				method: 'GET',
-				cache: 'no-store',
-			})
-			const dataCommission: {
-				id: number
-				fromEur: number
-				fromRub: number
-				fromXof: number
-			} = await commission.json()
-
-			setCommission(dataCommission)
-		} catch (error) {
-			console.error('error fetching commission', error)
-		} finally {
-			setIsLoading(false)
-		}
-	}
-
 	console.log(getClaim('roles'))
 
-	if (
-		!getPermissions().permissions?.includes('admin:permission') ||
-		!getPermissions().permissions?.includes('adminown:allowed')
-	) {
+	if (!getPermissions().permissions?.includes('admin:permission')) {
 		return (
 			<>
 				<div>You do not have permission to access this page</div>
@@ -103,7 +105,7 @@ function Page() {
 	// }
 	const handleSubmitCommission = async (data: z.infer<typeof formSchema>) => {
 		const parsedata = formSchema.safeParse(data)
-		await fetch('/api/updatecommission', {
+		await fetch('/api/updatecommissionPartnership', {
 			cache: 'no-cache',
 			method: 'POST',
 			headers: {
@@ -112,14 +114,7 @@ function Page() {
 			body: JSON.stringify(parsedata.data),
 		})
 		console.log(parsedata)
-		await getCommission()
-	}
-	const handleSubmitRate = async () => {
-		await fetch('/api/updaterate', {
-			cache: 'no-cache',
-			method: 'GET',
-		})
-		console.log('Rate updated')
+    await getPartnershipCommission() 
 	}
 
 	return (
@@ -135,7 +130,7 @@ function Page() {
 						render={({ field, formState }) => {
 							return (
 								<FormItem>
-									<FormLabel>fromEur</FormLabel>
+									<FormLabel>De Europa</FormLabel>
 									<FormControl>
 										<Input placeholder='fromEur ' type='number' {...field} />
 									</FormControl>
@@ -150,7 +145,7 @@ function Page() {
 						render={({ field, formState }) => {
 							return (
 								<FormItem>
-									<FormLabel>fromRub</FormLabel>
+									<FormLabel>De Russia</FormLabel>
 									<FormControl>
 										<Input placeholder='fromRub ' type='number' {...field} />
 									</FormControl>
@@ -165,7 +160,7 @@ function Page() {
 						render={({ field, formState }) => {
 							return (
 								<FormItem>
-									<FormLabel>fromXof</FormLabel>
+									<FormLabel>De Guine-bissau</FormLabel>
 									<FormControl>
 										<Input placeholder='fromXof ' type='number' {...field} />
 									</FormControl>
@@ -174,19 +169,10 @@ function Page() {
 							)
 						}}
 					/>
-					<Button type='submit'>Submit</Button>
+					<Button type='submit'>Postar comissão</Button>
 				</form>
 			</Form>
 
-			<Card>
-				<CardHeader>
-					<CardTitle>update Commission</CardTitle>
-				</CardHeader>
-
-				<CardContent>
-					<Button name='fromEur' type='submit' onClick={handleSubmitRate} />
-				</CardContent>
-			</Card>
 			<LoginLink>Sign in</LoginLink>
 
 			<RegisterLink>Sign up</RegisterLink>
@@ -196,7 +182,7 @@ function Page() {
 				<div>Loading commission data...</div>
 			) : (
 				<Table>
-					<TableCaption>comissão</TableCaption>
+					<TableCaption>comissão do parceiro</TableCaption>
 					<TableHeader>
 						<TableRow>
 							<TableHead>De europa</TableHead>
@@ -207,13 +193,13 @@ function Page() {
 					<TableBody>
 						<TableRow>
 							<TableCell className='font-medium'>
-								{commission?.fromEur}
+								{commissionPartnership?.fromEurPartnership}
 							</TableCell>
 							<TableCell className='font-medium'>
-								{commission?.fromRub}
+								{commissionPartnership?.fromRubPartnership}
 							</TableCell>
 							<TableCell className='font-medium'>
-								{commission?.fromXof}
+								{commissionPartnership?.fromXofPartnership}
 							</TableCell>
 						</TableRow>
 					</TableBody>
