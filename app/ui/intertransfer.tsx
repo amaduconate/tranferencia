@@ -253,30 +253,63 @@ function InterTransfer() {
 	}
 
 	const getRubleRate = async () => {
-		const exchange_rate = await fetch('/api/exchange_rate', {
-			method: 'GET',
-			cache: 'no-store',
-			// next: { revalidate: 3600 * 20 },
-		})
-		const commission = await fetch('/api/fetchcommission', {
-			method: 'GET',
-			cache: 'no-store',
-			// next: { revalidate: 3600 * 20 },
-		})
-		const dataCommission: {
-			id: number
-			fromEur: number
-			fromRub: number
-			fromXof: number
-		} = await commission.json()
-		const dataExchangeRate: {
-			id: number
-			fromEur: number
-			fromRub: number
-			fromXof: number
-		} = await exchange_rate.json()
-		setDataRate(dataExchangeRate)
-		setCommission(dataCommission)
+		try {
+			const exchange_rate = await fetch('/api/exchange_rate', {
+				method: 'GET',
+				cache: 'no-store',
+				// next: { revalidate: 3600 * 20 },
+			})
+			const commission = await fetch('/api/fetchcommission', {
+				method: 'GET',
+				cache: 'no-store',
+				// next: { revalidate: 3600 * 20 },
+			})
+			if (!commission.ok) {
+				// Handle HTTP errors
+				throw new Error(`Commission fetch failed: ${commission.statusText}`)
+			}
+			if (!exchange_rate.ok) {
+				// Handle HTTP errors
+				throw new Error(`Commission fetch failed: ${exchange_rate.statusText}`)
+			}
+
+			const dataCommission: {
+				id: number
+				fromEur: number
+				fromRub: number
+				fromXof: number
+			} = await commission.json()
+			if (
+				!dataCommission ||
+				typeof dataCommission.fromEur !== 'number' ||
+				typeof dataCommission.fromRub !== 'number' ||
+				typeof dataCommission.fromXof !== 'number'
+			) {
+				throw new Error('Invalid commission data structure')
+			}
+			const dataExchangeRate: {
+				id: number
+				fromEur: number
+				fromRub: number
+				fromXof: number
+			} = await exchange_rate.json()
+			if (
+				!dataExchangeRate ||
+				typeof dataExchangeRate.fromEur !== 'number' ||
+				typeof dataExchangeRate.fromRub !== 'number' ||
+				typeof dataExchangeRate.fromXof !== 'number'
+			) {
+				throw new Error('Invalid commission data structure')
+			}
+			setDataRate(dataExchangeRate)
+			setCommission(dataCommission)
+		} catch (error) {
+			console.error('Data fetching error:', error);
+
+			return {
+				error: error instanceof Error ? error.message : 'Failed to fetch data',
+			}
+		}
 	}
 
 	function getExchangeRateSender(
@@ -386,7 +419,7 @@ function InterTransfer() {
 						.multiply(100 - commission.fromXof),
 					{ precision: 10 }
 				).value
-				const amountFinal = currency(amountReceived, { precision: 1}).divide(
+				const amountFinal = currency(amountReceived, { precision: 1 }).divide(
 					rateWithCommission
 				)
 
@@ -418,9 +451,10 @@ function InterTransfer() {
 						.multiply(100 - commission.fromEur),
 					{ precision: 8 }
 				).value
-				const amountFinal = currency(amountReceived, { precision: 1, symbol: '€' }).divide(
-					rateWithCommission
-				)
+				const amountFinal = currency(amountReceived, {
+					precision: 1,
+					symbol: '€',
+				}).divide(rateWithCommission)
 				console.log(`this is ${amountFinal.format()}`)
 				setAmount(amountFinal.value)
 			}
