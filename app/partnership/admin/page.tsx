@@ -1,9 +1,6 @@
 'use client'
 
-
-import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
 	Form,
 	FormField,
@@ -79,6 +76,8 @@ function Page() {
 
 	const { getPermissions, user, getClaim } = useKindeBrowserClient()
 
+	const permissions = getPermissions() as { permissions?: string[] }
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -90,7 +89,7 @@ function Page() {
 
 	console.log(getClaim('roles'))
 
-	if (!getPermissions().permissions?.includes('admin:permission')) {
+	if (!permissions.permissions?.includes('admin:permission')) {
 		return (
 			<>
 				<div>You do not have permission to access this page</div>

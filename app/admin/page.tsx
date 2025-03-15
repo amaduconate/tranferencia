@@ -51,6 +51,8 @@ function Page() {
 	}, [])
 	const { getPermissions, user, getClaim } = useKindeBrowserClient()
 
+const permissions = getPermissions() as { permissions?: string[] }
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -86,8 +88,8 @@ function Page() {
 	console.log(getClaim('roles'))
 
 	if (
-		!getPermissions().permissions?.includes('admin:permission') ||
-		!getPermissions().permissions?.includes('adminown:allowed')
+		!permissions.permissions?.includes('admin:permission') ||
+		!permissions.permissions?.includes('adminown:allowed')
 	) {
 		return (
 			<>
